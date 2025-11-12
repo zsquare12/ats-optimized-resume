@@ -17,8 +17,8 @@ st.set_page_config(
 st.title("📃 CareerCraft")
 st.write(1.1)
 
-# Display a message with a LinkedIn profile link
-st.write("Developed by [Jitendra-Kumar](https://www.linkedin.com/in/jitendra-ky)")
+# # Display a message with a LinkedIn profile link
+# st.write("Developed by [Jitendra-Kumar](https://www.linkedin.com/in/jitendra-ky)")
 
 
 avs.add_vertical_space(4)
@@ -113,11 +113,11 @@ with col1:
         </p>
         """, unsafe_allow_html=True)
 
-with col2:
-    # Embed YouTube video
-    st.video("https://youtu.be/-C5RDNQNT1c?si=bFBaWwzr0Be7fCnd")
+# with col2:
+#     # Embed YouTube video
+#     st.video("https://youtu.be/-C5RDNQNT1c?si=bFBaWwzr0Be7fCnd")
 
-avs.add_vertical_space(10)
+# avs.add_vertical_space(10)
 
 
 
