@@ -27,7 +27,7 @@ key = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=key)
 
 
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 def get_gemini_response(prompt):
     st.write("Generating response...")
@@ -35,27 +35,22 @@ def get_gemini_response(prompt):
     st.write("Response generated!")
     return response.text
 
-def input_pdf_text(file_name):
+def input_pdf_text(uploaded_file):
     try:
-        # Open the PDF file in binary mode
-        with open(file_name, 'rb') as file:
-            # Create a PDF reader object
-            pdf_reader = PyPDF2.PdfReader(file)
-            
-            # Initialize a variable to store the text content
-            text = ""
-            
-            # Iterate through all the pages and extract the text
-            for page_num in range(len(pdf_reader.pages)):
-                page = pdf_reader.pages[page_num]
-                text += page.extract_text()
-            
-            return text
-    except FileNotFoundError:
-        return "File not found. Please check the file name and try again."
+        # Create a PDF reader object from the uploaded file
+        pdf_reader = PyPDF2.PdfReader(uploaded_file)
+        
+        # Initialize a variable to store the text content
+        text = ""
+        
+        # Iterate through all the pages and extract the text
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]
+            text += page.extract_text()
+        
+        return text
     except Exception as e:
-        return f"An error occurred: {e}"
-    return text
+        return f"An error occurred while reading the PDF: {e}"
 
 def analyse_resume(resume_txt, job_description):
     prompt = open('prompt.md', 'r').read()
@@ -77,12 +72,19 @@ with col1:
     submit = st.button("Submit")
 
     if submit:
-        if uploaded_file is not None:
+        if uploaded_file is not None and jd.strip():
             text = input_pdf_text(uploaded_file)
-            response = analyse_resume(text, jd)
-            st.subheader(response)
-        else:
-            st.error("Please upload the resume")
+            if "error" not in text.lower():
+                with st.spinner("Analyzing your resume..."):
+                    response = analyse_resume(text, jd)
+                st.markdown("### Analysis Results")
+                st.markdown(response)
+            else:
+                st.error(text)
+        elif uploaded_file is None:
+            st.error("Please upload your resume")
+        elif not jd.strip():
+            st.error("Please paste the job description")
 
 with col2:
     st.image('https://cdn.dribbble.com/userupload/12500996/file/original-b458fe398a6d7f4e9999ce66ec856ff9.gif', use_column_width=True)
